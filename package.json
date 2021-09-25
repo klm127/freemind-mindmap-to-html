@@ -2,8 +2,8 @@
   "name": "freemind-mindmap-to-html",
   "version": "1.0.0",
   "description": "Converts freemind XML exports into collapsable HTML elements of similar style to the original mind map.",
-  "main": "index.js",
   "scripts": {
+    "start": "node ./bin/www",
     "test": "test"
   },
   "repository": {
@@ -15,6 +15,12 @@
     "mindmap",
     "map"
   ],
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "morgan": "~1.9.1"
+  },
   "author": "klm127",
   "license": "ISC"
 }

@@ -1,3 +1,5 @@
 {
-    "workbench.preferredDarkColorTheme": "Monokai"
+    "workbench.preferredDarkColorTheme": "Abyss",
+    "workbench.colorTheme": "Abyss",
+    "workbench.editor.showIcons": false
 }
