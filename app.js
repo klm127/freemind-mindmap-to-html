@@ -17,8 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload({debug:true}));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
 
 
 module.exports = app;

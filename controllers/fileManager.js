@@ -1,8 +1,7 @@
 const fs = require('fs');
-const fileUpload = require('express-fileupload');
 const xml2js = require('xml2js');
 
-const TMP_PATH = "tmp"
+const TMP_PATH = "public/mindmaps"
 
 var mindMapListPage = '<html>No Mind Maps Detected</html>'
 
@@ -31,7 +30,7 @@ function createMindMapPage(title, jsonstring, res) {
     <head>
     <title>${title}</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     </head>
     `
     let body = `
@@ -40,18 +39,37 @@ function createMindMapPage(title, jsonstring, res) {
     </body>
     `
     let bottomscripts = `
-    <script type="text/javascript" src="../mindmap.js"></script>
-    <script type="text/javascript">
-        const ${snakeCaseTitle} = ${jsonstring};
+    <script type="text/javascript" src="../data/${dashCaseTitle}.js"></script>
+    <script type="text/javascript" src="../script/mindmap.js"></script>
+    <script type="text/javascript"> 
+    var chode = new Chode(null, ${snakeCaseTitle}["map"]["node"][0]);
+    var mapWeb = new MapWeb(chode, {autoscroll:true});
+
+    document.body.appendChild(chode.element);
     </script>
-    <script type="text/javascript"> //assemble </script>
+    <style>
+    .Chode-other-nodes {
+        margin-left: 20px;
+    }
+    
+    .Chode-text {
+        height: 50%;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+    .Chode-text:hover {
+        cursor:pointer;
+    }
+    </style>
     `
 
     let fullhtml = `<html>${head}${body}${bottomscripts}</html>`;
 
-    fs.writeFile(`${TMP_PATH}/${dashCaseTitle}.html`, fullhtml, ()=> {
-        console.log('new html file created');
-        sendMindMapListPage(res);
+    fs.writeFile(`${TMP_PATH}/data/${dashCaseTitle}.js`, `const ${snakeCaseTitle} = ${jsonstring}`, () => {
+        fs.writeFile(`${TMP_PATH}/html/${dashCaseTitle}.html`, fullhtml, ()=> {
+            console.log('new html file created');
+            sendMindMapListPage(res);
+        })
     })
 }
 
@@ -67,10 +85,13 @@ function sendMindMapListPage(res) {
     </head>
     `
     let body = `<body><h1>Mind Maps</h1>`
-    fs.readdir(TMP_PATH, function(error, files) {
+    fs.readdir(TMP_PATH + '/html', function(error, files) {
         mindmaps = files;
         for(i in mindmaps) {
-            body += `<a href=${TMP_PATH}/${mindmaps[i]}><div>${mindmaps[i]}</div></a>`
+            console.log(mindmaps[i]);
+            if(mindmaps[i].match(/.html$/)) {
+                body += `<a href=${TMP_PATH}/html/${mindmaps[i]}><div>${mindmaps[i]}</div></a>`
+            }
         }
         body += `</body>`
         mindMapListPage = '<html>' + head + body + '</html>'
